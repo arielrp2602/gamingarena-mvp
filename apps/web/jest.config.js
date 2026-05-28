@@ -16,6 +16,10 @@ const config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '\\.(css|less|scss|sass)$': '<rootDir>/__mocks__/fileMock.js',
+    // Next.js internals
+    '^next/navigation$': '<rootDir>/__mocks__/next/navigation.js',
+    '^next/link$': '<rootDir>/__mocks__/next/link.js',
+    '^next/image$': '<rootDir>/__mocks__/next/image.js',
   },
   setupFilesAfterEnv: ['@testing-library/jest-dom'],
   testMatch: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.test.ts', '**/*.test.tsx'],
