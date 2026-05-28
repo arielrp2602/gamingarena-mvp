@@ -1,0 +1,657 @@
+// GamingArena — schema.prisma
+// Prisma 7 + PrismaPg adapter + PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum Role {
+  JUGADOR
+  TIENDA
+  JUEZ
+  ADMIN
+}
+
+enum TipoJuego {
+  TCG
+  VIDEOJUEGO
+}
+
+enum VerificationStatus {
+  PENDIENTE
+  VERIFICADO
+  RECHAZADO
+}
+
+enum TipoTorneo {
+  COMPETITIVO
+  CASUAL
+}
+
+enum TorneoStatus {
+  BORRADOR
+  ABIERTO
+  EN_CURSO
+  FINALIZADO
+  CANCELADO
+}
+
+enum TipoPremio {
+  DINERO
+  CREDITO_TIENDA
+  PRODUCTO
+  MIXTO
+}
+
+enum InscripcionStatus {
+  PENDIENTE // pago en proceso (reserva 10 min)
+  CONFIRMADA // pago exitoso
+  CANCELADA
+  EXPULSADO
+}
+
+enum RondaStatus {
+  PENDIENTE
+  EN_CURSO
+  FINALIZADA
+}
+
+enum PartidaStatus {
+  PENDIENTE
+  EN_CURSO
+  COMPLETADA
+  FINALIZADA
+  WALKOVER
+  DISPUTADA
+  CANCELADA
+}
+
+enum ResultadoStatus {
+  PENDIENTE
+  PARCIAL
+  CONFIRMADO
+  DISPUTA
+}
+
+enum DisputaStatus {
+  ABIERTA
+  EN_REVISION
+  ESCALADA
+  RESUELTA
+}
+
+enum DeckCheckStatus {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+}
+
+enum PagoStatus {
+  PENDIENTE // reserva activa (10 min)
+  COMPLETADO
+  FALLIDO
+  REEMBOLSADO
+  CHARGEBACK
+}
+
+enum NotificacionTipo {
+  INSCRIPCION_CONFIRMADA
+  INSCRIPCION_CANCELADA
+  TORNEO_ABIERTO
+  TORNEO_INICIADO
+  TORNEO_CANCELADO
+  TORNEO_FINALIZADO
+  PARTIDA_LISTA
+  PARTIDA_INICIADA
+  PARTIDA_RESULTADO
+  RESULTADO_PENDIENTE_FIRMA
+  DISPUTA_ABIERTA
+  DISPUTA_NUEVA
+  DISPUTA_RESUELTA
+  DECK_CHECK_SOLICITADO
+  DECK_CHECK_RESULTADO
+  PAGO_COMPLETADO
+  PAGO_FALLIDO
+  REEMBOLSO_PROCESADO
+  CHARGEBACK_DETECTADO
+  VERIFICACION_APROBADA
+  VERIFICACION_RECHAZADA
+  TIENDA_VERIFICADA
+  JUEZ_ASIGNADO
+  WALKOVER
+  RONDA_INICIADA
+}
+
+enum FeedbackTipo {
+  BUG
+  SUGERENCIA
+  MEJORA
+  OTRO
+}
+
+enum FeedbackStatus {
+  NUEVO
+  EN_REVISION
+  RESUELTO
+  DESCARTADO
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// USUARIOS Y PERFILES
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id                     String    @id @default(cuid())
+  email                  String    @unique
+  password               String
+  /// Array de roles asignados — PostgreSQL native enum[]
+  roles                  Role[]    @default([JUGADOR])
+  /// Rol activo en la sesión actual (selector de contexto en navbar)
+  activeRole             Role      @default(JUGADOR)
+  discordId              String?   @unique
+  discordUsername        String?
+  emailVerified          Boolean   @default(false)
+  emailVerifyToken       String?   @unique
+  onboardingDone         Boolean   @default(false)
+  stripeCustomerId       String?   @unique
+  suspended              Boolean   @default(false)
+  resetPasswordToken     String?   @unique
+  resetPasswordExpiresAt DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  jugadorProfile   JugadorProfile?
+  tiendaProfile    TiendaProfile?
+  juezProfile      JuezProfile?
+  notificaciones   Notificacion[]
+  feedbacks        Feedback[]
+  mensajesEnviados Mensaje[]
+}
+
+model JugadorProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nombre        String
+  avatar        String?
+  ciudad        String
+  rankingPuntos Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  inscripciones     Inscripcion[]
+  expulsiones       Expulsion[]
+  pagos             Pago[]
+  /// Juegos favoritos (many-to-many)
+  juegosFavoritos   Juego[]       @relation("JugadorJuegosFavoritos")
+  /// Partidas donde este jugador ocupa el slot 1
+  partidasComoJ1    Partida[]     @relation("Partida_J1")
+  /// Partidas donde este jugador ocupa el slot 2
+  partidasComoJ2    Partida[]     @relation("Partida_J2")
+  /// Partidas perdidas por walkover (no se presentó)
+  walkoverDerrotas  Partida[]     @relation("Partida_Walkover")
+  /// Resultados donde fue declarado ganador confirmado
+  resultadosGanados Resultado[]   @relation("Resultado_Ganador")
+  /// Resultados que J1 reportó (quién ganó según J1)
+  reportesComoJ1    Resultado[]   @relation("Resultado_ReporteJ1")
+  /// Resultados que J2 reportó (quién ganó según J2)
+  reportesComoJ2    Resultado[]   @relation("Resultado_ReporteJ2")
+  deckChecks        DeckCheck[]
+}
+
+model TiendaProfile {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nombre             String
+  descripcion        String?
+  ciudad             String
+  telefono           String
+  logo               String?
+  discordGuildId     String?            @unique
+  discordCategoryId  String?
+  verificationStatus VerificationStatus @default(PENDIENTE)
+  /// Stripe Connect account ID para recibir su parte del prize pool
+  stripeAccountId    String?            @unique
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  torneos        Torneo[]
+  formatosTienda FormatoTienda[]
+}
+
+model JuezProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nombre          String
+  avatar          String?
+  ciudad          String
+  /// Stripe Connect account ID para recibir su porcentaje del torneo
+  stripeAccountId String?  @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  partidas     Partida[]
+  disputas     Disputa[]
+  torneoJueces TorneoJuez[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CATÁLOGO (admin lo gestiona)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Juego {
+  id        String    @id @default(cuid())
+  nombre    String    @unique
+  tipo      TipoJuego
+  iconoUrl  String?
+  activo    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  formatos           FormatoJuego[]
+  personajes         Personaje[]
+  torneos            Torneo[]
+  jugadoresFavoritos JugadorProfile[] @relation("JugadorJuegosFavoritos")
+}
+
+/// Formatos base por juego — los carga el admin
+model FormatoJuego {
+  id          String   @id @default(cuid())
+  juegoId     String
+  juego       Juego    @relation(fields: [juegoId], references: [id])
+  nombre      String
+  descripcion String?
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  formatosTienda FormatoTienda[]
+  torneos        Torneo[]
+
+  @@unique([juegoId, nombre])
+}
+
+/// Subconjunto de formatos que cada tienda habilita para sus torneos
+model FormatoTienda {
+  id             String        @id @default(cuid())
+  tiendaId       String
+  tienda         TiendaProfile @relation(fields: [tiendaId], references: [id], onDelete: Cascade)
+  formatoJuegoId String
+  formatoJuego   FormatoJuego  @relation(fields: [formatoJuegoId], references: [id])
+  activo         Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+
+  torneos Torneo[]
+
+  @@unique([tiendaId, formatoJuegoId])
+}
+
+/// Solo para videojuegos — el jugador elige su personaje al reportar resultado
+model Personaje {
+  id        String   @id @default(cuid())
+  nombre    String
+  iconoUrl  String?
+  juegoId   String
+  juego     Juego    @relation(fields: [juegoId], references: [id])
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  resultados Resultado[]
+
+  @@unique([juegoId, nombre])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TORNEOS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Torneo {
+  id                    String        @id @default(cuid())
+  tiendaId              String
+  tienda                TiendaProfile @relation(fields: [tiendaId], references: [id])
+  juegoId               String
+  juego                 Juego         @relation(fields: [juegoId], references: [id])
+  formatoTiendaId       String
+  formatoTienda         FormatoTienda @relation(fields: [formatoTiendaId], references: [id])
+  nombre                String
+  descripcion           String?
+  bannerUrl             String?
+  tipoTorneo            TipoTorneo
+  status                TorneoStatus  @default(BORRADOR)
+  cupoMaximo            Int
+  inscripcionPrecio     Decimal? // null = gratuito (CASUAL)
+  fechaInicio           DateTime
+  fechaFin              DateTime?
+  /// Porcentaje del prize pool que va a la plataforma
+  porcentajePlataforma  Int           @default(15)
+  /// Porcentaje del prize pool que retiene la tienda
+  porcentajeTienda      Int           @default(20)
+  /// Porcentaje del prize pool que va al juez
+  porcentajeJuez        Int           @default(5)
+  deckListObligatoria   Boolean       @default(false)
+  juezRequerido         Boolean       @default(false)
+  /// Reglas mostradas en el modal pre-partida (puede personalizarlas la tienda)
+  reglasPartida         String[]
+  tiempoPorRondaMinutos Int?
+  turnosExtraTiempo     Int?
+  /// Número total de rondas suizas del torneo
+  rondasTotales         Int           @default(4)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  reglaPuntos    ReglaPuntos?
+  premios        Premio[]
+  inscripciones  Inscripcion[]
+  rondas         Ronda[]
+  partidas       Partida[]
+  pagos          Pago[]
+  torneoJueces   TorneoJuez[]
+  formatoJuego   FormatoJuego? @relation(fields: [formatoJuegoId], references: [id])
+  formatoJuegoId String?
+
+  @@index([status])
+  @@index([tiendaId])
+  @@index([juegoId])
+  @@index([fechaInicio])
+}
+
+/// Asignación de jueces a torneos (many-to-many join table)
+model TorneoJuez {
+  id        String      @id @default(cuid())
+  torneoId  String
+  torneo    Torneo      @relation(fields: [torneoId], references: [id], onDelete: Cascade)
+  juezId    String
+  juez      JuezProfile @relation(fields: [juezId], references: [id])
+  createdAt DateTime    @default(now())
+
+  @@unique([torneoId, juezId])
+  @@index([torneoId])
+  @@index([juezId])
+}
+
+/// Solo aplica en torneos TCG; defaults 3 / 1 / 0
+model ReglaPuntos {
+  id       String @id @default(cuid())
+  torneoId String @unique
+  torneo   Torneo @relation(fields: [torneoId], references: [id], onDelete: Cascade)
+  victoria Int    @default(3)
+  empate   Int    @default(1)
+  derrota  Int    @default(0)
+}
+
+model Premio {
+  id               String     @id @default(cuid())
+  torneoId         String
+  torneo           Torneo     @relation(fields: [torneoId], references: [id], onDelete: Cascade)
+  posicion         Int
+  tipoPremio       TipoPremio @default(DINERO)
+  monto            Decimal?
+  credito          Decimal?
+  descripcion      String?
+  porcentajePremio Decimal?
+  createdAt        DateTime   @default(now())
+
+  @@unique([torneoId, posicion])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INSCRIPCIONES
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Inscripcion {
+  id           String            @id @default(cuid())
+  torneoId     String
+  torneo       Torneo            @relation(fields: [torneoId], references: [id])
+  jugadorId    String
+  jugador      JugadorProfile    @relation(fields: [jugadorId], references: [id])
+  /// Solo presente si el torneo es COMPETITIVO
+  pagoId       String?           @unique
+  pago         Pago?             @relation(fields: [pagoId], references: [id])
+  deckListUrl  String?
+  deckImagenes String[]
+  status       InscripcionStatus @default(PENDIENTE)
+  /// Puntos acumulados en el torneo (Swiss)
+  puntos       Int               @default(0)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  deckCheck DeckCheck?
+
+  @@unique([torneoId, jugadorId])
+  @@index([torneoId])
+  @@index([jugadorId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RONDAS Y PARTIDAS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Ronda {
+  id          String      @id @default(cuid())
+  torneoId    String
+  torneo      Torneo      @relation(fields: [torneoId], references: [id])
+  numero      Int
+  iniciadaAt  DateTime?
+  /// Timestamp de fin de ronda (iniciadaAt + duracionMin)
+  finAt       DateTime?
+  /// Duración configurada para esta ronda en minutos
+  duracionMin Int
+  status      RondaStatus @default(PENDIENTE)
+  createdAt   DateTime    @default(now())
+
+  partidas Partida[]
+
+  @@unique([torneoId, numero])
+  @@index([torneoId])
+}
+
+model Partida {
+  id                 String          @id @default(cuid())
+  torneoId           String
+  torneo             Torneo          @relation(fields: [torneoId], references: [id])
+  rondaId            String
+  ronda              Ronda           @relation(fields: [rondaId], references: [id])
+  juezId             String?
+  juez               JuezProfile?    @relation(fields: [juezId], references: [id])
+  jugador1Id         String
+  jugador1           JugadorProfile  @relation("Partida_J1", fields: [jugador1Id], references: [id])
+  jugador2Id         String
+  jugador2           JugadorProfile  @relation("Partida_J2", fields: [jugador2Id], references: [id])
+  status             PartidaStatus   @default(PENDIENTE)
+  discordChannelId   String?
+  discordInviteLink  String?
+  /// true cuando el jugador ha leído y aceptado el modal de reglas
+  jugador1Acepto     Boolean         @default(false)
+  jugador2Acepto     Boolean         @default(false)
+  walkoverAt         DateTime?
+  /// Jugador que perdió por no presentarse en 10 min
+  walkoverPerdedorId String?
+  walkoverPerdedor   JugadorProfile? @relation("Partida_Walkover", fields: [walkoverPerdedorId], references: [id])
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  resultado Resultado?
+  disputa   Disputa?
+  mensajes  Mensaje[]
+
+  @@index([torneoId])
+  @@index([rondaId])
+  @@index([status])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RESULTADOS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Resultado {
+  id                 String          @id @default(cuid())
+  partidaId          String          @unique
+  partida            Partida         @relation(fields: [partidaId], references: [id])
+  /// Ganador confirmado (null hasta que ambos firmen o el juez decida)
+  ganadorId          String?
+  ganador            JugadorProfile? @relation("Resultado_Ganador", fields: [ganadorId], references: [id])
+  /// Quién reportó como ganador J1 (null si aún no reportó)
+  reporteJ1GanadorId String?
+  reporteJ1          JugadorProfile? @relation("Resultado_ReporteJ1", fields: [reporteJ1GanadorId], references: [id])
+  /// Quién reportó como ganador J2 (null si aún no reportó)
+  reporteJ2GanadorId String?
+  reporteJ2          JugadorProfile? @relation("Resultado_ReporteJ2", fields: [reporteJ2GanadorId], references: [id])
+  /// Solo para videojuegos: personaje usado por el ganador
+  personajeId        String?
+  personaje          Personaje?      @relation(fields: [personajeId], references: [id])
+  evidenciaUrl       String?
+  /// J1 firmó el resultado final
+  firmadoJ1          Boolean         @default(false)
+  /// J2 firmó el resultado final
+  firmadoJ2          Boolean         @default(false)
+  status             ResultadoStatus @default(PENDIENTE)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DISPUTAS
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Disputa {
+  id                  String        @id @default(cuid())
+  partidaId           String        @unique
+  partida             Partida       @relation(fields: [partidaId], references: [id])
+  juezId              String?
+  juez                JuezProfile?  @relation(fields: [juezId], references: [id])
+  status              DisputaStatus @default(ABIERTA)
+  descripcion         String
+  evidenciaUrl        String?
+  veredicto           String?
+  /// Texto de resolución
+  resolucion          String?
+  /// ID del JuezProfile o TiendaProfile que resolvió
+  resolvidaPorId      String?
+  /// Timestamp de resolución
+  resolvidaAt         DateTime?
+  /// Torneo (desnormalizado para queries eficientes)
+  torneoId            String?
+  deckCheckSolicitado Boolean       @default(false)
+  /// Timestamp cuando escala al admin de la tienda por inactividad del juez
+  escalaAdminAt       DateTime?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+}
+
+model DeckCheck {
+  id            String          @id @default(cuid())
+  inscripcionId String          @unique
+  inscripcion   Inscripcion     @relation(fields: [inscripcionId], references: [id])
+  jugadorId     String
+  jugador       JugadorProfile  @relation(fields: [jugadorId], references: [id])
+  /// Torneo (desnormalizado para queries eficientes)
+  torneoId      String?
+  deckListUrl   String?
+  deckImagenes  String[]
+  status        DeckCheckStatus @default(PENDIENTE)
+  /// Notas del revisor (juez o tienda)
+  notas         String?
+  /// Observaciones adicionales del jugador o sistema
+  observaciones String?
+  revisadoAt    DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PAGOS (Stripe Connect)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Pago {
+  id                    String         @id @default(cuid())
+  torneoId              String
+  torneo                Torneo         @relation(fields: [torneoId], references: [id])
+  jugadorId             String
+  jugador               JugadorProfile @relation(fields: [jugadorId], references: [id])
+  stripePaymentIntentId String         @unique
+  monto                 Decimal
+  status                PagoStatus     @default(PENDIENTE)
+  /// Hasta cuándo está reservado el cupo si el pago falla (10 min)
+  reservadoHasta        DateTime?
+  chargebackAt          DateTime?
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  /// Back-relation: la inscripción que usa este pago
+  inscripcion Inscripcion?
+
+  @@index([torneoId])
+  @@index([jugadorId])
+  @@index([status])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COMUNICACIÓN
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Notificacion {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tipo      NotificacionTipo
+  mensaje   String
+  leida     Boolean          @default(false)
+  /// Ruta interna para el link de la campana
+  link      String?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, leida])
+  @@index([userId])
+}
+
+/// Chat en tiempo real dentro de cada sala de partida (Socket.io)
+model Mensaje {
+  id        String   @id @default(cuid())
+  partidaId String
+  partida   Partida  @relation(fields: [partidaId], references: [id])
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id])
+  contenido String
+  createdAt DateTime @default(now())
+
+  @@index([partidaId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EXPULSIONES Y FEEDBACK
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Historial privado — visible solo para el propio jugador y admin
+model Expulsion {
+  id        String         @id @default(cuid())
+  jugadorId String
+  jugador   JugadorProfile @relation(fields: [jugadorId], references: [id])
+  torneoId  String
+  motivo    String
+  creadaAt  DateTime       @default(now())
+
+  @@index([jugadorId])
+}
+
+model Feedback {
+  id         String         @id @default(cuid())
+  userId     String
+  user       User           @relation(fields: [userId], references: [id])
+  tipo       FeedbackTipo
+  mensaje    String
+  capturaUrl String?
+  resolucion String?
+  status     FeedbackStatus @default(NUEVO)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([status])
+}

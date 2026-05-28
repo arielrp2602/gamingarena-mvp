@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la /Users/arielramirez/Documents/codes/gamingarena 2>/dev/null && echo \"---\" && ls /Users/arielramirez/Documents/codes/ 2>/dev/null)",
+      "Read(//Users/arielramirez/Documents/codes/**)",
+      "Bash(mkdir -p \\\\ *)",
+      "Bash(node -e ' *)",
+      "Bash(npx tsc *)",
+      "Bash(python3 -m json.tool)",
+      "Bash(./node_modules/.bin/tsc --version)",
+      "Bash(../../node_modules/.bin/tsc --version)",
+      "Bash(/Users/arielramirez/Documents/codes/gamingarena/node_modules/.bin/tsc --noEmit)",
+      "Bash(/Users/arielramirez/Documents/codes/gamingarena/node_modules/.bin/tsc -p tsconfig.json --noEmit)",
+      "Bash(../../node_modules/.bin/tsc --noEmit)",
+      "Bash(../../node_modules/.bin/tsc --showConfig)",
+      "Bash(npm install *)",
+      "WebSearch",
+      "Bash(npx prisma *)",
+      "Bash(../../node_modules/.bin/jest --testPathPattern=\"\\(rondas|auth|torneos\\)\\\\.service\\\\.spec\" --no-coverage)",
+      "Bash(../../node_modules/.bin/jest --testPathPatterns=\"service\\\\.spec\" --no-coverage)",
+      "Bash(../../node_modules/.bin/jest --no-coverage)"
+    ],
+    "additionalDirectories": [
+      "/Users/arielramirez/Documents/codes/gamingarena/apps/web/src/app/(public)/torneos"
+    ]
+  }
+}
