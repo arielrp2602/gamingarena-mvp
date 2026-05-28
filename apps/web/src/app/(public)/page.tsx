@@ -32,25 +32,25 @@ const FEATURES = [
     icon: TrophyIcon,
     title: 'Torneos Swiss',
     desc: 'Sistema de brackets Swiss automático. Emparejamiento inteligente, sin rematches.',
-    color: 'text-yellow-400',
+    color: 'text-gold',
   },
   {
     icon: ZapIcon,
     title: 'Pagos integrados',
     desc: 'Inscripciones con Stripe. Reembolso automático si el torneo se cancela.',
-    color: 'text-cyan-400',
+    color: 'text-info',
   },
   {
     icon: ShieldCheckIcon,
     title: 'Jueces certificados',
     desc: 'Resolución de disputas por jueces oficiales. Cada partida tiene árbitro.',
-    color: 'text-green-400',
+    color: 'text-success',
   },
   {
     icon: UsersIcon,
     title: 'Comunidad activa',
     desc: 'Perfiles de jugador, ranking nacional, historial de torneos.',
-    color: 'text-purple-400',
+    color: 'text-gaming-purple',
   },
 ];
 
@@ -72,15 +72,14 @@ export default async function LandingPage() {
           </Badge>
 
           <h1 className="font-heading text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            Compite en torneos{' '}
-            <span className="text-gradient-purple">oficiales</span>
+            Compite en torneos
             <br />
-            desde donde quieras
+            <span className="text-gradient-purple">desde donde quieras</span>
           </h1>
 
           <p className="mx-auto max-w-xl text-lg text-muted-foreground">
             Yu-Gi-Oh!, Magic, Pokémon, Smash Bros y más. Inscríbete, sube tu decklist,
-            juega tus partidas y sube en el ranking nacional.
+            juega tus partidas. No olvides decirle a tu oponente "ez gg".
           </p>
 
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">

@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
     return (
       <Card>
         <CardContent className="pt-6 text-center space-y-4">
-          <CheckCircleIcon className="mx-auto size-12 text-green-400" />
+          <CheckCircleIcon className="mx-auto size-12 text-success" />
           <div>
             <h2 className="font-heading text-lg font-bold">Revisa tu email</h2>
             <p className="mt-1 text-sm text-muted-foreground">

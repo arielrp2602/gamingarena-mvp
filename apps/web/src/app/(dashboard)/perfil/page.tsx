@@ -106,8 +106,8 @@ export default function PerfilPage() {
       ) : stats ? (
         <div className="grid grid-cols-3 gap-3">
           <StatCard label="Torneos" value={stats.torneos} icon={<TrophyIcon className="size-4 text-primary" />} />
-          <StatCard label="Victorias" value={stats.victorias} icon={<ShieldIcon className="size-4 text-green-400" />} />
-          <StatCard label="Ranking" value={`#${stats.rankingGlobal}`} icon={<UserIcon className="size-4 text-cyan-400" />} />
+          <StatCard label="Victorias" value={stats.victorias} icon={<ShieldIcon className="size-4 text-success" />} />
+          <StatCard label="Ranking" value={`#${stats.rankingGlobal}`} icon={<UserIcon className="size-4 text-info" />} />
         </div>
       ) : null}
 

@@ -68,8 +68,8 @@ export default function JuezDashboardPage() {
               </Card>
               <Card size="sm">
                 <CardContent className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-xl bg-cyan-500/15">
-                    <SwordsIcon className="size-5 text-cyan-400" />
+                  <div className="flex size-10 items-center justify-center rounded-xl bg-info/15">
+                    <SwordsIcon className="size-5 text-info" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">En curso</p>
@@ -79,8 +79,8 @@ export default function JuezDashboardPage() {
               </Card>
               <Card size="sm">
                 <CardContent className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-xl bg-amber-500/15">
-                    <AlertTriangleIcon className="size-5 text-amber-400" />
+                  <div className="flex size-10 items-center justify-center rounded-xl bg-warning/15">
+                    <AlertTriangleIcon className="size-5 text-warning" />
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Disputas pendientes</p>
@@ -94,10 +94,10 @@ export default function JuezDashboardPage() {
 
       {/* CTA */}
       {(stats?.disputasPendientes ?? 0) > 0 && (
-        <div className="flex items-center justify-between rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3">
+        <div className="flex items-center justify-between rounded-xl border border-warning/30 bg-warning/10 px-4 py-3">
           <div className="flex items-center gap-2">
-            <AlertTriangleIcon className="size-4 text-amber-400" />
-            <p className="text-sm font-medium text-amber-400">
+            <AlertTriangleIcon className="size-4 text-warning" />
+            <p className="text-sm font-medium text-warning">
               {stats?.disputasPendientes} disputa{stats?.disputasPendientes !== 1 ? 's' : ''} por resolver
             </p>
           </div>

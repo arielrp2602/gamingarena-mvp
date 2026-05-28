@@ -37,7 +37,7 @@ export function StandingsSection({ torneoId }: { torneoId: string }) {
   return (
     <div className="space-y-3">
       <h2 className="font-heading font-semibold flex items-center gap-2">
-        <TrophyIcon className="size-4 text-yellow-400" />
+        <TrophyIcon className="size-4 text-gold" />
         Clasificación final
       </h2>
       <div className="space-y-2">
@@ -46,22 +46,22 @@ export function StandingsSection({ torneoId }: { torneoId: string }) {
             key={s.jugador.id}
             className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${
               s.posicion === 1
-                ? 'border-yellow-500/30 bg-yellow-500/10'
+                ? 'border-gold/30 bg-gold/10'
                 : s.posicion === 2
-                ? 'border-zinc-400/30 bg-zinc-400/10'
+                ? 'border-silver/30 bg-silver/10'
                 : s.posicion === 3
-                ? 'border-orange-500/30 bg-orange-500/10'
+                ? 'border-bronze/30 bg-bronze/10'
                 : 'border-border bg-card'
             }`}
           >
             <span
               className={`w-7 text-center text-sm font-bold ${
                 s.posicion === 1
-                  ? 'text-yellow-400'
+                  ? 'text-gold'
                   : s.posicion === 2
-                  ? 'text-zinc-400'
+                  ? 'text-silver'
                   : s.posicion === 3
-                  ? 'text-orange-400'
+                  ? 'text-bronze'
                   : 'text-muted-foreground'
               }`}
             >

@@ -29,8 +29,8 @@ interface TiendaStats {
 }
 
 const VERIFICATION_BADGE: Record<VerificationStatus, { label: string; cls: string }> = {
-  PENDIENTE: { label: 'Pendiente verificación', cls: 'border-amber-500/30 bg-amber-500/10 text-amber-400' },
-  VERIFICADO: { label: 'Tienda verificada', cls: 'border-green-500/30 bg-green-500/10 text-green-400' },
+  PENDIENTE: { label: 'Pendiente verificación', cls: 'border-warning/30 bg-warning/10 text-warning' },
+  VERIFICADO: { label: 'Tienda verificada', cls: 'border-success/30 bg-success/10 text-success' },
   RECHAZADO: { label: 'Verificación rechazada', cls: 'border-destructive/30 bg-destructive/10 text-destructive' },
 };
 
@@ -90,20 +90,20 @@ export default function TiendaDashboardPage() {
               <StatCard
                 label="Torneos activos"
                 value={stats?.torneosActivos ?? 0}
-                icon={<CheckCircleIcon className="size-5 text-green-400" />}
-                color="bg-green-500/15"
+                icon={<CheckCircleIcon className="size-5 text-success" />}
+                color="bg-success/15"
               />
               <StatCard
                 label="Jugadores inscritos"
                 value={stats?.totalInscritos ?? 0}
-                icon={<UsersIcon className="size-5 text-cyan-400" />}
-                color="bg-cyan-500/15"
+                icon={<UsersIcon className="size-5 text-info" />}
+                color="bg-info/15"
               />
               <StatCard
                 label="Ingresos (mes)"
                 value={`$${(stats?.ingresosMes ?? 0).toLocaleString('es-MX')}`}
-                icon={<AlertCircleIcon className="size-5 text-amber-400" />}
-                color="bg-amber-500/15"
+                icon={<AlertCircleIcon className="size-5 text-warning" />}
+                color="bg-warning/15"
               />
             </>
           )}

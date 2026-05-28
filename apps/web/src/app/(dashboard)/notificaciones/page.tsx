@@ -11,11 +11,11 @@ import { cn } from '@/lib/utils';
 
 const TIPO_COLORS: Record<string, string> = {
   PARTIDA_ASIGNADA: 'bg-primary/15 text-primary',
-  RESULTADO_REPORTADO: 'bg-cyan-500/15 text-cyan-400',
-  DISPUTA_CREADA: 'bg-amber-500/15 text-amber-400',
-  DISPUTA_RESUELTA: 'bg-green-500/15 text-green-400',
+  RESULTADO_REPORTADO: 'bg-info/15 text-info',
+  DISPUTA_CREADA: 'bg-warning/15 text-warning',
+  DISPUTA_RESUELTA: 'bg-success/15 text-success',
   TORNEO_INICIADO: 'bg-primary/15 text-primary',
-  INSCRIPCION_CONFIRMADA: 'bg-green-500/15 text-green-400',
+  INSCRIPCION_CONFIRMADA: 'bg-success/15 text-success',
   DECK_CHECK_RECHAZADO: 'bg-destructive/15 text-destructive',
   INFO: 'bg-muted text-muted-foreground',
 };

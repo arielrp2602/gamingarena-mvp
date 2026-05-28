@@ -31,7 +31,7 @@ const TIPO_CONFIG: Record<FeedbackTipo, { label: string; icon: React.ReactNode; 
   SUGERENCIA: {
     label: 'Sugerencia',
     icon: <LightbulbIcon className="size-3.5" />,
-    cls: 'border-amber-500/30 bg-amber-500/10 text-amber-400',
+    cls: 'border-warning/30 bg-warning/10 text-warning',
   },
   OTRO: {
     label: 'Otro',
@@ -95,7 +95,7 @@ export default function AdminFeedbackPage() {
       ) : (feedbacks ?? []).length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <CheckCircleIcon className="size-10 text-green-400/40" />
+            <CheckCircleIcon className="size-10 text-success/40" />
             <p className="text-sm text-muted-foreground">
               Sin feedback {tab === 'pendiente' ? 'pendiente' : 'resuelto'}
             </p>
@@ -121,7 +121,7 @@ export default function AdminFeedbackPage() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-6 text-xs text-green-400 hover:text-green-400"
+                      className="h-6 text-xs text-success hover:text-success"
                       onClick={() => resolverMutation.mutate(fb.id)}
                       disabled={resolverMutation.isPending}
                     >

@@ -27,8 +27,8 @@ const CARD_ELEMENT_OPTIONS = {
   style: {
     base: {
       fontSize: '14px',
-      color: 'hsl(0 0% 95%)',
-      '::placeholder': { color: 'hsl(0 0% 45%)' },
+      color: 'var(--foreground)',
+      '::placeholder': { color: 'var(--muted-foreground)' },
       fontFamily: 'inherit',
     },
   },

@@ -51,7 +51,7 @@ export default function VerifyEmailPage() {
         )}
         {status === 'success' && (
           <>
-            <CheckCircleIcon className="mx-auto size-12 text-green-400" />
+            <CheckCircleIcon className="mx-auto size-12 text-success" />
             <div>
               <h2 className="font-heading text-lg font-bold">¡Email verificado!</h2>
               <p className="mt-1 text-sm text-muted-foreground">

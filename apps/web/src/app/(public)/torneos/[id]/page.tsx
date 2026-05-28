@@ -119,7 +119,7 @@ export default async function TorneoDetailPage({ params }: PageProps) {
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
                   <ShieldCheckIcon className="size-3" /> Árbitro
                 </span>
-                <span className="text-sm font-medium text-green-400">Incluido</span>
+                <span className="text-sm font-medium text-success">Incluido</span>
               </div>
             )}
             {torneo.deckListObligatoria && (
@@ -164,7 +164,7 @@ export default async function TorneoDetailPage({ params }: PageProps) {
                     </span>
                     <span className="flex-1 text-sm font-medium">{p.descripcion}</span>
                     {p.monto && (
-                      <Badge variant="outline" className="border-yellow-500/30 bg-yellow-500/10 text-yellow-400">
+                      <Badge variant="outline" className="border-gold/30 bg-gold/10 text-gold">
                         {formatCurrency(p.monto)}
                       </Badge>
                     )}

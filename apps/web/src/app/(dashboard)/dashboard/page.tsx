@@ -76,8 +76,8 @@ export default function DashboardPage() {
         </Card>
         <Card size="sm">
           <CardContent className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-cyan-500/15">
-              <ClipboardListIcon className="size-5 text-cyan-400" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-info/15">
+              <ClipboardListIcon className="size-5 text-info" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Inscripciones</p>
@@ -87,8 +87,8 @@ export default function DashboardPage() {
         </Card>
         <Card size="sm">
           <CardContent className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-purple-500/15">
-              <BellIcon className="size-5 text-purple-400" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-gaming-purple/15">
+              <BellIcon className="size-5 text-gaming-purple" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Notificaciones</p>

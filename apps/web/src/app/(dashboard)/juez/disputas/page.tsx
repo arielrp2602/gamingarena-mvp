@@ -81,7 +81,7 @@ export default function DisputasPage() {
         <div>
           <h1 className="font-heading text-2xl font-bold">Disputas</h1>
           {pendientes.length > 0 && (
-            <p className="text-sm text-amber-400">{pendientes.length} pendiente{pendientes.length !== 1 ? 's' : ''}</p>
+            <p className="text-sm text-warning">{pendientes.length} pendiente{pendientes.length !== 1 ? 's' : ''}</p>
           )}
         </div>
       </div>
@@ -113,7 +113,7 @@ export default function DisputasPage() {
       ) : (disputas ?? []).length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-3 py-14 text-center">
-            <CheckCircleIcon className="size-10 text-green-400/40" />
+            <CheckCircleIcon className="size-10 text-success/40" />
             <p className="text-sm text-muted-foreground">Sin disputas {tab === 'ABIERTA' ? 'pendientes' : 'resueltas'}</p>
           </CardContent>
         </Card>
@@ -138,7 +138,7 @@ export default function DisputasPage() {
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
                   {disputa.escalada && (
-                    <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-400">
+                    <Badge variant="outline" className="border-warning/30 bg-warning/10 text-warning">
                       Escalada
                     </Badge>
                   )}
@@ -161,7 +161,7 @@ export default function DisputasPage() {
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="text-amber-400 hover:text-amber-400"
+                      className="text-warning hover:text-warning"
                       onClick={() => escalarMutation.mutate(disputa.id)}
                       disabled={escalarMutation.isPending}
                     >

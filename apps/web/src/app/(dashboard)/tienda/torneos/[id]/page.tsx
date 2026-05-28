@@ -131,7 +131,7 @@ export default function GestionarTorneoPage({ params }: PageProps) {
       ) : null}
 
       {!canIniciar && torneo?.status === 'ABIERTO' && (
-        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-400">
+        <div className="rounded-lg border border-warning/30 bg-warning/10 px-4 py-2.5 text-sm text-warning">
           Necesitas al menos 4 jugadores confirmados para iniciar. Actualmente: {confirmados.length}
         </div>
       )}
@@ -228,7 +228,7 @@ export default function GestionarTorneoPage({ params }: PageProps) {
                   <div className="flex gap-1.5">
                     <Button
                       size="sm"
-                      className="h-7 bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                      className="h-7 bg-success/20 text-success hover:bg-success/30"
                       onClick={() =>
                         setDeckCheckModal({
                           id: inscripcion.deckCheck!.id,
@@ -308,8 +308,8 @@ export default function GestionarTorneoPage({ params }: PageProps) {
 
 function InscripcionStatusBadge({ status }: { status: InscripcionStatus }) {
   const map: Record<InscripcionStatus, { label: string; cls: string }> = {
-    PENDIENTE: { label: 'Pendiente', cls: 'border-amber-500/30 bg-amber-500/10 text-amber-400' },
-    CONFIRMADA: { label: 'Confirmado', cls: 'border-green-500/30 bg-green-500/10 text-green-400' },
+    PENDIENTE: { label: 'Pendiente', cls: 'border-warning/30 bg-warning/10 text-warning' },
+    CONFIRMADA: { label: 'Confirmado', cls: 'border-success/30 bg-success/10 text-success' },
     CANCELADA: { label: 'Cancelado', cls: 'border-muted-foreground/30 bg-muted/50 text-muted-foreground' },
     EXPULSADO: { label: 'Expulsado', cls: 'border-destructive/30 bg-destructive/10 text-destructive' },
   };

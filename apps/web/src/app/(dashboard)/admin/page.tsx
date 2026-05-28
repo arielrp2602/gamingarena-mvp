@@ -44,16 +44,16 @@ export default function AdminPage() {
     {
       label: 'Tiendas pendientes',
       value: stats?.tiendasPendientes,
-      icon: <StoreIcon className="size-5 text-amber-400" />,
-      color: 'bg-amber-500/15',
+      icon: <StoreIcon className="size-5 text-warning" />,
+      color: 'bg-warning/15',
       href: '/admin/tiendas',
       alert: (stats?.tiendasPendientes ?? 0) > 0,
     },
     {
       label: 'Tiendas verificadas',
       value: stats?.tiendasVerificadas,
-      icon: <StoreIcon className="size-5 text-green-400" />,
-      color: 'bg-green-500/15',
+      icon: <StoreIcon className="size-5 text-success" />,
+      color: 'bg-success/15',
       href: '/admin/tiendas',
     },
     {
@@ -66,15 +66,15 @@ export default function AdminPage() {
     {
       label: 'Jugadores registrados',
       value: stats?.totalJugadores,
-      icon: <UsersIcon className="size-5 text-cyan-400" />,
-      color: 'bg-cyan-500/15',
+      icon: <UsersIcon className="size-5 text-info" />,
+      color: 'bg-info/15',
       href: '/admin/tiendas',
     },
     {
       label: 'Feedback pendiente',
       value: stats?.feedbackPendiente,
-      icon: <MessageSquareIcon className="size-5 text-purple-400" />,
-      color: 'bg-purple-500/15',
+      icon: <MessageSquareIcon className="size-5 text-gaming-purple" />,
+      color: 'bg-gaming-purple/15',
       href: '/admin/feedback',
       alert: (stats?.feedbackPendiente ?? 0) > 0,
     },
@@ -93,7 +93,7 @@ export default function AdminPage() {
           ? Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)
           : items.map((item) => (
               <Link key={item.label} href={item.href}>
-                <Card size="sm" className={`transition-colors hover:border-primary/30 ${item.alert ? 'border-amber-500/30 bg-amber-500/5' : ''}`}>
+                <Card size="sm" className={`transition-colors hover:border-primary/30 ${item.alert ? 'border-warning/30 bg-warning/5' : ''}`}>
                   <CardContent className="flex items-center gap-3">
                     <div className={`flex size-10 items-center justify-center rounded-xl ${item.color}`}>
                       {item.icon}
@@ -102,7 +102,7 @@ export default function AdminPage() {
                       <p className="text-xs text-muted-foreground">{item.label}</p>
                       <p className="font-heading text-xl font-bold">{item.value ?? '—'}</p>
                     </div>
-                    {item.alert && <AlertCircleIcon className="size-4 text-amber-400 shrink-0" />}
+                    {item.alert && <AlertCircleIcon className="size-4 text-warning shrink-0" />}
                   </CardContent>
                 </Card>
               </Link>

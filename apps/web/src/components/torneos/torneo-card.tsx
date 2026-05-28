@@ -84,7 +84,7 @@ export function TorneoCard({ torneo }: TorneoCardProps) {
             </div>
             <div className="flex items-center gap-1.5 font-medium text-foreground">
               {torneo.tipoTorneo === 'CASUAL' ? (
-                <span className="text-cyan-400">Gratuito</span>
+                <span className="text-info">Gratuito</span>
               ) : (
                 <span>{formatCurrency(torneo.inscripcionPrecio ?? 0)}</span>
               )}

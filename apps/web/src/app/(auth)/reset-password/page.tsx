@@ -62,8 +62,8 @@ export default function ResetPasswordPage() {
     return (
       <Card>
         <CardContent className="py-10 text-center space-y-4">
-          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-green-500/15">
-            <CheckCircleIcon className="size-7 text-green-400" />
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-success/15">
+            <CheckCircleIcon className="size-7 text-success" />
           </div>
           <div>
             <p className="font-heading font-semibold">Contraseña actualizada</p>

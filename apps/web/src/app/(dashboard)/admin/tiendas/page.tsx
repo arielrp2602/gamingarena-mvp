@@ -28,8 +28,8 @@ interface TiendaAdmin {
 }
 
 const STATUS_BADGE: Record<VerificationStatus, { label: string; cls: string }> = {
-  PENDIENTE: { label: 'Pendiente', cls: 'border-amber-500/30 bg-amber-500/10 text-amber-400' },
-  VERIFICADO: { label: 'Verificada', cls: 'border-green-500/30 bg-green-500/10 text-green-400' },
+  PENDIENTE: { label: 'Pendiente', cls: 'border-warning/30 bg-warning/10 text-warning' },
+  VERIFICADO: { label: 'Verificada', cls: 'border-success/30 bg-success/10 text-success' },
   RECHAZADO: { label: 'Rechazada', cls: 'border-destructive/30 bg-destructive/10 text-destructive' },
 };
 

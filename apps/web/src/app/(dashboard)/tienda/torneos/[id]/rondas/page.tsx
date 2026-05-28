@@ -226,7 +226,7 @@ function RondaStatusBadge({ status }: { status: Ronda['status'] }) {
   const map = {
     PENDIENTE: { label: 'Pendiente', cls: 'border-muted-foreground/30 text-muted-foreground' },
     EN_CURSO: { label: 'En curso', cls: 'border-primary/40 bg-primary/10 text-primary' },
-    FINALIZADA: { label: 'Finalizada', cls: 'border-green-500/30 bg-green-500/10 text-green-400' },
+    FINALIZADA: { label: 'Finalizada', cls: 'border-success/30 bg-success/10 text-success' },
   };
   const { label, cls } = map[status];
   return <Badge variant="outline" className={cls}>{label}</Badge>;
@@ -236,8 +236,8 @@ function PartidaRow({ partida }: { partida: PartidaResumen }) {
   const statusColor: Record<PartidaStatus, string> = {
     PENDIENTE: 'text-muted-foreground',
     EN_CURSO: 'text-primary',
-    COMPLETADA: 'text-green-400',
-    DISPUTADA: 'text-amber-400',
+    COMPLETADA: 'text-success',
+    DISPUTADA: 'text-warning',
     CANCELADA: 'text-muted-foreground',
   };
 
